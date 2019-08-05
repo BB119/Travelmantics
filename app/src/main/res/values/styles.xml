@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Login UI theme -->
+    <style name="LoginUITheme">
+        <item name="android:colorBackground">@color/loginBackground</item>
+    </style>
+
 </resources>

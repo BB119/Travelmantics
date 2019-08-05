@@ -1,5 +1,6 @@
 package com.bbexcellence.travelmantics;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -84,7 +86,11 @@ public class DealActivity extends AppCompatActivity {
                     Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
                     while(!uri.isComplete());
                     String url = uri.getResult().toString();
+                    String pictureName = taskSnapshot.getStorage().getPath();
                     mCurrentDeal.setImageUrl(url);
+                    mCurrentDeal.setImageName(pictureName);
+                    Log.d("Url: ", url);
+                    Log.d("Name: ", pictureName);
                     showImage(url);
                 }
             });
@@ -101,14 +107,19 @@ public class DealActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.save_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
         //Deactivating delete and save options for non admins
         boolean adminCheck = FirebaseUtil.isAdmin;
         menu.findItem(R.id.delete_menu).setVisible(adminCheck);
         menu.findItem(R.id.save_menu).setVisible(adminCheck);
         enableEditTexts(adminCheck);
+        findViewById(R.id.image_button).setEnabled(adminCheck);
 
-        return true;
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -158,6 +169,22 @@ public class DealActivity extends AppCompatActivity {
             return;
         }
         mDatabaseReference.child(mCurrentDeal.getId()).removeValue();
+
+        String pictureName = mCurrentDeal.getImageName();
+        if (pictureName != null && !pictureName.isEmpty()) {
+            StorageReference picRef = FirebaseUtil.mStorage.getReference().child(mCurrentDeal.getImageName());
+            picRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("Delete Image", "Image Successfully Deleted");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("Delete Image", e.getMessage());
+                }
+            });
+        }
     }
 
     private void backToList() {
@@ -173,7 +200,7 @@ public class DealActivity extends AppCompatActivity {
 
     private void showImage(String url) {
         if (url != null && !url.isEmpty()) {
-            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels - 32;
             Picasso.get()
                     .load(url)
                     .resize(width, width * 2/3)

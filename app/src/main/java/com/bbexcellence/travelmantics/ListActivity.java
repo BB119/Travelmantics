@@ -60,12 +60,14 @@ public class ListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.list_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem insertMenu = menu.findItem(R.id.insert_menu);
         insertMenu.setVisible(FirebaseUtil.isAdmin);
-        Log.d("here", "" + FirebaseUtil.isAdmin);
-
-        return true;
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

@@ -35,9 +35,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:18.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-database:18.0.1'
+
+    // Required only if Facebook login support is required
+    // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
+    implementation 'com.facebook.android:facebook-android-sdk:5.1.0'
+
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'// Circular image library
 }
 
 apply plugin: 'com.google.gms.google-services'

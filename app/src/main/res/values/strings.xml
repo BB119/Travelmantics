@@ -5,4 +5,7 @@
     <string name="decription_hint">Decription</string>
     <string name="save_menu">Save</string>
     <string name="delete_menu">Delete Deal</string>
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">550628862138850</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb550628862138850</string>
 </resources>

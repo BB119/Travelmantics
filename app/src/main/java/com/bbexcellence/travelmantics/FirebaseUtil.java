@@ -99,6 +99,7 @@ public class FirebaseUtil {
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.FacebookBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
 
         // Create and launch sign-in intent
@@ -106,6 +107,11 @@ public class FirebaseUtil {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setLogo(R.drawable.traveling_icon)
+                        .setTheme(R.style.LoginUITheme)
+                        .setTosAndPrivacyPolicyUrls(
+                                "https://example.com/terms.html",
+                                "https://example.com/privacy.html")
                         .build(),
                 RC_SIGN_IN);
     }
