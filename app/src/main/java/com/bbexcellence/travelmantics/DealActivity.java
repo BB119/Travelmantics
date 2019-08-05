@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 public class DealActivity extends AppCompatActivity {
 
@@ -30,6 +33,7 @@ public class DealActivity extends AppCompatActivity {
     private EditText textTitle;
     private EditText textPrice;
     private EditText textDescription;
+    private ImageView mImageView;
     private TravelDeal mCurrentDeal;
 
     @Override
@@ -44,6 +48,7 @@ public class DealActivity extends AppCompatActivity {
         textTitle = findViewById(R.id.text_title);
         textPrice = findViewById(R.id.text_price);
         textDescription = findViewById(R.id.text_description);
+        mImageView = findViewById(R.id.image);
 
         Intent intent = getIntent();
         TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
@@ -71,7 +76,6 @@ public class DealActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICTURE_RESULT && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
-            Log.d("hello", "" + imageUri);
             StorageReference ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());
             ref.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -81,6 +85,7 @@ public class DealActivity extends AppCompatActivity {
                     while(!uri.isComplete());
                     String url = uri.getResult().toString();
                     mCurrentDeal.setImageUrl(url);
+                    showImage(url);
                 }
             });
         }
@@ -90,6 +95,7 @@ public class DealActivity extends AppCompatActivity {
         textTitle.setText(mCurrentDeal.getTitle());
         textDescription.setText(mCurrentDeal.getDescription());
         textPrice.setText(mCurrentDeal.getPrice());
+        showImage(mCurrentDeal.getImageUrl());
     }
 
     @Override
@@ -163,5 +169,16 @@ public class DealActivity extends AppCompatActivity {
         textTitle.setEnabled(isEnabled);
         textPrice.setEnabled(isEnabled);
         textDescription.setEnabled(isEnabled);
+    }
+
+    private void showImage(String url) {
+        if (url != null && !url.isEmpty()) {
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            Picasso.get()
+                    .load(url)
+                    .resize(width, width * 2/3)
+                    .centerCrop()
+                    .into(mImageView);
+        }
     }
 }
