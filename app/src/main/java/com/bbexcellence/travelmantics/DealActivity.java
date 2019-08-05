@@ -76,13 +76,9 @@ public class DealActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-                    uri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String url = uri.toString();
-                            mCurrentDeal.setImageUrl(url);
-                        }
-                    });
+                    while(!uri.isComplete());
+                    String url = uri.getResult().toString();
+                    mCurrentDeal.setImageUrl(url);
                 }
             });
         }
